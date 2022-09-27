@@ -38,7 +38,7 @@ pipeline{
         stage ('Pipeline Scan') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Veracode_Credentials', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]){
-                    sh 'curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
+                    sh 'curl -sO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
                     sh 'unzip pipeline-scan-LATEST.zip pipeline-scan.jar'
                     sh 'java -jar pipeline-scan.jar \
                     --veracode_api_id "${API_ID}" \
