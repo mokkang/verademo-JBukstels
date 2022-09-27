@@ -49,11 +49,7 @@ pipeline{
             }
         }
     
-            post {
-                always {
-                    archiveArtifacts artifacts: 'results.json', fingerprint: true
-        }
-    }
+
         stage ("Veracode scan") {
             steps {
                 echo 'Veracode scanning'
