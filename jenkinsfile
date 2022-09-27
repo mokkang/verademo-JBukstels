@@ -28,7 +28,7 @@ pipeline{
                 echo 'Veracode SCA'
                 withCredentials([string(credentialsId: 'SCA_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
                     script {
-                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan --update-advisor"
+                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh"
                     }
             }
         }
