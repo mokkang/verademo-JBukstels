@@ -38,9 +38,9 @@ pipeline{
         stage ("Veracode scan") {
             steps {
                 echo 'Veracode scanning'
-                withCredentials([usernamePassword(credentialsId: 'veracode_login', passwordVariable: 'Veracode_API_KEY', usernameVariable: 'Veracode_API_ID')]) {
+                withCredentials([usernamePassword(credentialsId: 'Veracode_Credentials', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]) {
                     // fire-and-forget
-                        veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: 'Jenkinsfile', uploadExcludesPattern: '', uploadIncludesPattern: 'app/target/verademo.war', vid: "${Veracode_API_ID}", vkey: "${Veracode_API_KEY}"
+                        veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: 'Jenkinsfile', uploadExcludesPattern: '', uploadIncludesPattern: 'app/target/verademo.war', vid: "${API_ID}", vkey: "${API_KEY}"
                     
                         // wait for scan to complete (includes timeout parameter)
                         // veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, timeout: 20, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: "${BUILD_TAG}", uploadExcludesPattern: '', uploadIncludesPattern: 'target/verademo.war', vid: "${VERACODE_API_ID}", vkey: "${VERACODE_API_KEY}"
