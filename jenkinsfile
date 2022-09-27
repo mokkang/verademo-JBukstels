@@ -35,19 +35,7 @@ pipeline{
        }
         }
         }
-            stages {
-        stage ('Build'){
-            steps {
-                git branch:'main', url:'https://github.com/justinbukstel/verademo'
-                
-                dir ("app"){
-                    sh "pwd"
-                    sh "ls"
-                    sh "mvn clean package"
-                }
-            }
-        }
-        stage ('Pipeline Scan') {
+                stage ('Pipeline Scan') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '784c4ceb-d42c-4f98-9750-f05447f3530c', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]){
                     sh 'java -jar pipeline-scan.jar \
@@ -79,5 +67,3 @@ pipeline{
         }
     }
     }
-        
-}
