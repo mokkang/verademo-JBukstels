@@ -35,6 +35,37 @@ pipeline{
        }
         }
         }
+            stages {
+        stage ('Build'){
+            steps {
+                git branch:'main', url:'https://github.com/justinbukstel/verademo'
+                
+                dir ("app"){
+                    sh "pwd"
+                    sh "ls"
+                    sh "mvn clean package"
+                }
+            }
+        }
+        stage ('Pipeline Scan') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: '784c4ceb-d42c-4f98-9750-f05447f3530c', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]){
+                    sh 'java -jar pipeline-scan.jar \
+                    --veracode_api_id "${API_ID}" \
+                    --veracode_api_key "${API_KEY}" \
+                    --file "app/target/verademo.war" \
+                    --fail_on_severity="Very High, High" \
+                    --fail_on_cwe="80"'
+                } 
+                
+            }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'results.json', fingerprint: true
+        }
+    }
         stage ("Veracode scan") {
             steps {
                 echo 'Veracode scanning'
