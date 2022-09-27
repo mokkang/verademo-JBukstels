@@ -29,7 +29,7 @@ pipeline{
                 withCredentials([string(credentialsId: 'SCA_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
                     withMaven(maven:'maven-3') {
                     script {
-                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh"
+                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan ./app"
                     }
        }
        }
