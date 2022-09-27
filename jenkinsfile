@@ -36,8 +36,7 @@ pipeline{
         stage ("Veracode scan") {
             steps {
                 echo 'Veracode scanning'
-                withCredentials([ usernamePassword (
-                    withCredentials([usernamePassword(credentialsId: 'veracode_login', passwordVariable: 'Veracode_API_KEY', usernameVariable: 'Veracode_API_ID')]) {
+                withCredentials([usernamePassword(credentialsId: 'veracode_login', passwordVariable: 'Veracode_API_KEY', usernameVariable: 'Veracode_API_ID')]) {
                     // fire-and-forget
                         veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: 'Jenkinsfile', uploadExcludesPattern: '', uploadIncludesPattern: 'app/target/verademo.war', vid: "${API_ID}", vkey: "${API_KEY}"
                     
