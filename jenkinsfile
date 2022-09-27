@@ -1,0 +1,51 @@
+pipeline{
+    agent any
+    
+    environment {
+        VERACODE_APP_NAME = "Verademo Jenkins" // define app name 
+    }
+    
+    tools {
+        //install Maven
+        maven "Maven-3"
+    }
+    stages{
+        stage("Build"){
+            steps {
+                //Get code from Github
+                git branch:'main', url:'https://github.com/veracode/verademo'
+                
+                //run Maven build
+                dir ("app"){
+                    sh "pwd"
+                    sh "ls"
+                    sh "mvn clean package"
+                }
+            }
+        }
+        stage ("Veracode SCA") {
+            steps {
+                echo 'Veracode SCA'
+                withCredentials([string(credentialsId: 'SCA_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
+                    script {
+                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan --update-advisor"
+                    }
+            }
+        }
+        }
+        stage ("Veracode scan") {
+            steps {
+                echo 'Veracode scanning'
+                withCredentials([ usernamePassword (
+                    withCredentials([usernamePassword(credentialsId: 'veracode_login', passwordVariable: 'Veracode_API_KEY', usernameVariable: 'Veracode_API_ID')]) {
+                    // fire-and-forget
+                        veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: 'Jenkinsfile', uploadExcludesPattern: '', uploadIncludesPattern: 'app/target/verademo.war', vid: "${API_ID}", vkey: "${API_KEY}"
+                    
+                        // wait for scan to complete (includes timeout parameter)
+                        // veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, timeout: 20, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: "${BUILD_TAG}", uploadExcludesPattern: '', uploadIncludesPattern: 'target/verademo.war', vid: "${VERACODE_API_ID}", vkey: "${VERACODE_API_KEY}"
+                }
+        }
+    }
+    }
+        
+}
