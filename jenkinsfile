@@ -13,7 +13,7 @@ pipeline{
         stage("Build"){
             steps {
                 //Get code from Github
-                git branch:'main', url:'https://github.com/veracode/verademo'
+                git branch:'main', url:'https://github.com/justinbukstel/verademo'
                 
                 //run Maven build
                 dir ("app"){
@@ -38,6 +38,7 @@ pipeline{
         stage ('Pipeline Scan') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Veracode_Credentials', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]){
+                    withMaven(maven:'maven-3') {
                     sh 'curl -sO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
                     sh 'unzip pipeline-scan-LATEST.zip pipeline-scan.jar'
                     sh 'java -jar pipeline-scan.jar \
@@ -47,10 +48,11 @@ pipeline{
                     --fail_on_severity="Very High, High" \
                     --fail_on_cwe="80"'
                 } 
-                
+                }
             }
+            
         }
-    
+            
 
         stage ("Veracode scan") {
             steps {
