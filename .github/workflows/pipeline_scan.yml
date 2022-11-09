@@ -39,6 +39,7 @@ jobs:
         if-no-files-found: error
     
   pipeline-scan:
+    needs: build
     runs-on: ubuntu-latest
     permissions: 
       contents: read
