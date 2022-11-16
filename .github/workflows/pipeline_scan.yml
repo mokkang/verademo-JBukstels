@@ -127,4 +127,55 @@ jobs:
           #source-base-path-3: # optional, default is 
           # The conversion rule of Veracode findings to GitHub level
           #finding-rule-level: # default is 4:3:0
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          # Artifact name
+          name: veracode-results-sarif # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: veracode-results.sarif
+          # The desired behavior if no files are found using the provided path.
+     
+
+      - name: Veracode Dependency Scanning
+        # You may pin to the exact commit or the version.
+        # uses: veracode/veracode-sca@d8ce4a08eebf1a6c5e7759c1dc53c1172a3e7e64
+        uses: veracode/veracode-sca@v1.09
+        with:
+          # Authorization token to query and create issues
+          github_token: ${{ secrets.GH_TOKEN }}
+          # 
+          quick: false # optional, default is false
+          # Show update advisor
+          update_advisor: true # optional, default is false
+          # A git URL to work with in case the scan is not for the current repository
+          #url: https://github.com/bnreplah/verademo # optional, default is 
+          # The minimum CVSS value for vulnerability to be added as an issue
+          #min-cvss-for-issue: # optional, default is 0
+          # The maximum allowed cvss in found vulnerabilities to pass the step
+          #fail-on-cvss: # optional, default is 10
+          # An attribute to instruct the action to create an issue from found vulnerability or just simple text output
+          create-issues: true # optional, default is false
+          # A path within the repository where the build definition starts
+          path: app/ # optional, default is .
+          # Run the SRCCLR in debug mode
+          debug: false # optional, default is false
+          # Run the SRCCLR with the `--skip-collectors` options
+          #skip-collectors: # optional, default is false
+          # Run the SRCCLR with the `--allow-dirty` option
+          allow-dirty: true # optional, default is false
+          # Run the SRCCLR with the `--recursive` option
+          #recursive: # optional, default is false
+         
+      - name: Veracode scan results to GitHub issues Action
+        # You may pin to the exact commit or the version.
+        # uses: veracode/veracode-flaws-to-issues@e03c95a2d9ce730870fe160ff77bbce3b7f0e32d
+        uses: veracode/veracode-flaws-to-issues@v1.0.0
+        with:
+          # Scan results file
+          scan-results-json: results.json # default is filtered_results.json
+          # GitHub token to access the repo
+          github-token: ${{ secrets.GH_TOKEN }} 
+          # Delay (in seconds) between entering Issues into GitHub (due to rate limiting)
+          #wait-time: # optional, default is 2
          
