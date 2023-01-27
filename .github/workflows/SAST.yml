@@ -51,9 +51,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: | 
-          pwd
-          ls
+      - run: ls
       - name: Veracode Dependency Scanning
         # You may pin to the exact commit or the version.
         # uses: veracode/veracode-sca@9ab4d631fc9a0f14e1f9322c0d61bea90e924de1
