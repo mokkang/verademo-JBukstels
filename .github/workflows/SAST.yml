@@ -52,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify 
+        run: cd ..
         run: ls -la
       - name: Veracode Dependency Scanning
         # You may pin to the exact commit or the version.
