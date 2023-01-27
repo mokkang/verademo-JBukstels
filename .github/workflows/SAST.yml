@@ -79,7 +79,7 @@ jobs:
         
   veracode-sast-analysis:
     # Requires the previous step to be completed prior to moving onto this step, otherwise can be set to run in parallel
-    needs: build
+    needs: veracode-SCA-analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
