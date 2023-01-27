@@ -155,15 +155,16 @@ public class UserController {
 			Class.forName("com.mysql.jdbc.Driver");
 			connect = DriverManager.getConnection(Constants.create().getJdbcConnectionString());
 
-			/* START EXAMPLE VULNERABILITY */
+			/* START EXAMPLE VULNERABILITY FIXED */ 
 			// Execute the query
 			logger.info("Creating the Statement");
-			String sqlQuery = "select username, password, password_hint, created_at, last_login, real_name, blab_name from users where username='"
-					+ username + "' and password='" + md5(password) + "';";
-			sqlStatement = connect.createStatement();
+			String sqlQuery = "select username, password, password_hint, created_at, last_login, real_name, blab_name from users where username=? and password?";		
+			PreparedStatement preparedStatement = connect.prepareStatement(sqlQuery);
+			preparedStatement.setString(1, username);
+			preparedStatement.setString(2, md5(password));
 			logger.info("Execute the Statement");
-			ResultSet result = sqlStatement.executeQuery(sqlQuery);
-			/* END EXAMPLE VULNERABILITY */
+			ResultSet result = preparedStatement.executeQuery(sqlQuery);
+			/* END EXAMPLE VULNERABILITY FIXED */
 
 			// Did we find exactly 1 user that matched?
 			if (result.first()) {
