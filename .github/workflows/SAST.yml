@@ -45,6 +45,37 @@ jobs:
             path: app/target/verademo.war
             # The desired behavior if no files are found using the provided path.
             if-no-files-found: error
+  
+  veracode-SCA-analysis: 
+    # Requires previous step to be completed prior to moving onto this step 
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veracode Dependency Scanning
+        # You may pin to the exact commit or the version.
+        # uses: veracode/veracode-sca@9ab4d631fc9a0f14e1f9322c0d61bea90e924de1
+        uses: veracode/veracode-sca@v2.0.65
+        with:
+          # Authorization token to query and create issues
+          github_token: ${{ github.token }}
+          # Run the SRCCLR with the `--quick` options
+          quick: false
+          # Show update advisor
+          update_advisor: false
+          # An attribute to instruct the action to create an issue from found vulnerability or just simple text output
+          create-issues: false
+          # A path within the repository where the build definition starts
+          path: /app
+          # Run the SRCCLR in debug mode
+          debug: false
+          # Run the SRCCLR with the `--skip-collectors` options
+          skip-collectors: false
+          # Run the SRCCLR with the `--allow-dirty` option
+          allow-dirty: false
+          # Run the SRCCLR with the `--recursive` option
+          recursive: false
+          # Run the SRCCLR with the `--skip-vms` option
+          skip-vms: false
         
   veracode-sast-analysis:
     # Requires the previous step to be completed prior to moving onto this step, otherwise can be set to run in parallel
