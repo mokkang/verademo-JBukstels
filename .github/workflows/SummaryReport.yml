@@ -18,9 +18,11 @@ jobs:
     steps:
     - name: API Call
       uses: docker://veracode/api-signing:latest
-      with:
-        args: |
-          sh -c "veracode-api-signing --action GET --api_id $API_ID --api_key $API_KEY --url 'https://api.veracode.com/summaryreport/v1/applications?app_name=Verademo One'"
+      env: 
+        API_ID: ${{ secrets.VERACODE_API_ID }}
+        API_KEY: ${{ secrets.VERACODE_API_KEY }}
+      args: |
+        http --auth-type veracode_hmac https://api.veracode.com/api/authn/v2/api_credentials
       
           
           
