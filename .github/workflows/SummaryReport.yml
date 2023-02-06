@@ -16,8 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@3
       
-      - name: Get Application GUID
-        uses: docke://veracode/api-signing:latest
+      - name: Download API Signing 
+        uses: docker://veracode/api-signing:latest
+        
+      - name: Get App GUIDs
         run: http --auth-type=veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=Verademo One"
           
           
