@@ -20,6 +20,6 @@ jobs:
         uses: docker://veracode/api-signing:latest
         
       - name: Get App GUIDs
-        run: http --auth-type=veracode_hmac GET https://api.veracode.com/appsec/v1/applications/?name=Verademo One
+        run: http --auth-type=veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name="Verademo One""
           
           
