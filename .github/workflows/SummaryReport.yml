@@ -7,19 +7,20 @@ on:
 #    branches: [ main ]
     workflow_dispatch: 
 
+env:
+  API_ID: ${{ secrets.VERACODE_API_ID }}
+  API_KEY: ${{ secrets.VERACODE_API_KEY }}
 
-jobs:
-  summary:
+jobs: 
+  veracode-api-call:
     runs-on: ubuntu-latest
-    
-    
+  
     steps:
-      - uses: actions/checkout@v3
+    - name: API Call
+      uses: docker://veracode/api-signing:latest
+      with:
+        args: |
+          sh -c "veracode-api-signing --action GET --api_id $API_ID --api_key $API_KEY --url 'https://api.veracode.com/summaryreport/v1/applications?app_name=Verademo One'"
       
-      - name: Download API Signing 
-        uses: docker://veracode/api-signing:latest
-        
-      - name: Get App GUIDs
-        run: http --auth-type=veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name="Verademo One""
           
           
