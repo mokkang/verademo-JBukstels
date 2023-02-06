@@ -1,0 +1,23 @@
+name: Verademo Maven Build
+
+on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+    workflow_dispatch: 
+
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    
+    
+    steps:
+      - uses: actions/checkout@3
+      
+      - name: Get Application GUID
+        uses: docke://veracode/api-signing:latest
+        run: http --auth-type=veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=Verademo One"
+          
+          
