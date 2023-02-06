@@ -17,12 +17,13 @@ jobs:
   
     steps:
     - name: API Call
-      uses: docker://veracode/api-signing:latest
       env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
-      args: |
-        http --auth-type veracode_hmac https://api.veracode.com/api/authn/v2/api_credentials
+      run: |
+        docker run --rm veracode/api-signing \
+          http --auth-type veracode_hmac \
+          https://api.veracode.com/api/authn/v2/api_credentials
       
           
           
