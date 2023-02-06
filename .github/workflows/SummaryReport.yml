@@ -21,7 +21,10 @@ jobs:
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
-        docker run --rm veracode/api-signing \
+       docker run --rm \
+          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
+          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
+          veracode/api-signing \
           http --auth-type veracode_hmac \
           https://api.veracode.com/api/authn/v2/api_credentials
       
