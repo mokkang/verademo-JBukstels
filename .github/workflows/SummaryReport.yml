@@ -36,11 +36,16 @@ jobs:
       run: echo "APP_ID=$(cat app_id.txt)" >> $GITHUB_ENV
     
     
-    - name: Verfiy Variable
+  Verfiy_Variable:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Verify
       run: echo "APP_ID=$APP_ID"
-        
-
-
+      
+  Get_Summary_Report:
+    runs-on: ubuntu-latest
+    steps: 
     - name: Get Summary Report
       env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
