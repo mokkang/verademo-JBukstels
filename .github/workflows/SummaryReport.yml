@@ -18,6 +18,7 @@ jobs:
   
     steps:
     - name: Get Application GUID for Verademo One
+      id: get_guid
       env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
@@ -28,6 +29,9 @@ jobs:
           veracode/api-signing \
           http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}
+    
+    - name: Set APP_ID
+      run: echo APP_ID$(echo "${{ steps.get_guid.outputs.stdout }}" | awk '{ print $NF }') >> $GITHUB_ENV
           
           
     - name: Get Summary Report
