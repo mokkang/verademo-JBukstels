@@ -23,8 +23,8 @@ jobs:
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
         APP_ID=$(docker run --rm \
-          -e VERACODE_API_KEY_ID=${{ env.VERACODE_API_ID }} \
-          -e VERACODE_API_KEY_SECRET=${{ env.VERACODE_API_KEY }} \
+          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
+          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac \
           https://api.veracode.com/appsec/v1/applications \
@@ -36,8 +36,8 @@ jobs:
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
         docker run --rm \
-          -e VERACODE_API_KEY_ID=${{ env.VERACODE_API_ID }} \
-          -e VERACODE_API_KEY_SECRET=${{ env.VERACODE_API_KEY }} \
+          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
+          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac \
           https://api.veracode.com/appsec/v1/applications/$APP_ID/reports/summary \
