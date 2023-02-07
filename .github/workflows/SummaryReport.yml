@@ -23,17 +23,19 @@ jobs:
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
-        RESULT=$(docker run --rm \
+        output=$(docker run --rm \
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac GET \
-          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}) | grep -o '"guid":"[^"]*"' | awk -F ':' '{print $2}' | awk -F '"' '{print $2}' > app_guid.txt
-          
-    - name: Set APP_ID env variable
-      run: |
-        echo "APP_ID=$(cat app_guid.txt)" >> $GITHUB_ENV
-        echo $APP_ID
+          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }})
+        
+        APP_ID=$(echo "output" | grep -o '"guid:"[a-z0-9-]\{36\}"' | head -n1 | cut -d":" -f2 | tr -d '"')
+        echo "APP_ID=$APP_ID"
+        echo "::set-env name=APP_ID::$APP_ID"
+    
+    - name: Verfiy Variable
+      run: echo "APP_ID=$APP_ID"
         
 
 
