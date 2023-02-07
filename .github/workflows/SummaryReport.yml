@@ -22,7 +22,7 @@ jobs:
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
-        APP_ID=$(docker run --rm \
+        docker run --rm \
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
