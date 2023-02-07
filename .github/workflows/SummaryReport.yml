@@ -55,7 +55,7 @@ jobs:
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
-          http --auth-type veracode_hmac \
+          http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v2/applications/${{ env.APP_ID }}/summary_report \
   
       
