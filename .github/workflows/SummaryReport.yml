@@ -28,7 +28,7 @@ jobs:
           veracode/api-signing \
           http --auth-type veracode_hmac \
           https://api.veracode.com/appsec/v1/applications \
-          | jq -r --arg APP_NAME "${{ env.APP_NAME }}" '.applications[] | select(.name==$APP_NAME) | .guid')
+          | jq -r --arg APP_NAME "${{ env.APP_NAME }}" 'if .applications | length > 0 then .applications[] | select(.name==$APP_NAME) | .guid else "" end')
           
     - name: Get Summary Report
       env: 
