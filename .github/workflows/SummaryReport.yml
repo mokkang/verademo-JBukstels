@@ -28,8 +28,12 @@ jobs:
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac GET \
-          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} | jq -r '.applications[0].guid')
-        echo "::set-env name=APP_ID::$GUID"
+          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
+          | jq -r '.applications[0].guid')
+        echo "$GUID" > app_id.txt
+    
+    - name: Set env creds
+      run: echo "APP_ID=$(cat app_id.txt)" >> $GITHUB_ENV
     
     
     - name: Verfiy Variable
