@@ -36,8 +36,9 @@ jobs:
       run: echo "APP_ID=$(cat app_id.txt)" >> $GITHUB_ENV
     
     
-  Verfiy_Variable:
+  Verify_Variable:
     runs-on: ubuntu-latest
+    needs: veracode-api-call
     
     steps:
     - name: Verify
@@ -45,6 +46,7 @@ jobs:
       
   Get_Summary_Report:
     runs-on: ubuntu-latest
+    needs: Verify_Variable
     steps: 
     - name: Get Summary Report
       env: 
