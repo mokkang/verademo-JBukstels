@@ -31,7 +31,9 @@ jobs:
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}) | grep -o '"guid":"[^"]*"' | awk -F ':' '{print $2}' | awk -F '"' '{print $2}' > app_guid.txt
           
     - name: Set APP_ID env variable
-      run: echo "APP_ID=$(cat app_guid.txt)" >> $GITHUB_ENV
+      run: |
+        echo "APP_ID=$(cat app_guid.txt)" >> $GITHUB_ENV
+        echo $APP_ID
         
 
 
