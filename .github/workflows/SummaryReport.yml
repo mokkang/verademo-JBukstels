@@ -23,17 +23,18 @@ jobs:
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
-        docker run --rm \
+        RESULT=$(docker run --rm \
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac GET \
-          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}
+          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }})
+        APP_ID=$(echo $RESULT | jq -r '.[0]')
+        echo "APP_ID: $APP_ID"
+        echo "::set-env name=APP_ID::$APP_ID"
+      
     
-    - name: Set APP_ID
-      run: echo "APP_ID=$(echo "${{ steps.get_guid.outputs.stdout }}" | awk '{ print $NF }')" >> $GITHUB_ENV
-          
-          
+ 
     - name: Get Summary Report
       env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
