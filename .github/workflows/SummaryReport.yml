@@ -45,8 +45,6 @@ jobs:
      runs-on: ubuntu-latest
      needs: veracode-api-call
      steps:
-     - name: Verify_Variable
-       run: echo "APP_ID=$APP_ID"
      - name: Summary
        env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
