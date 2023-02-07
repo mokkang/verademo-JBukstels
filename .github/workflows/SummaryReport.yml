@@ -27,8 +27,8 @@ jobs:
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
           http --auth-type veracode_hmac \
-          https://api.veracode.com/appsec/v1/applications \
-          | jq -r --arg APP_NAME "${{ env.APP_NAME }}" 'if .applications | length > 0 then .applications[] | select(.name==$APP_NAME) | .guid else "" end')
+          https://api.veracode.com/appsec/v1/applications/?name-${{ env.APP_NAME}} \
+          
           
     - name: Get Summary Report
       env: 
