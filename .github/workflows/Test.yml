@@ -15,4 +15,6 @@ jobs:
     needs: job1
     steps:
     - name: Use the environment variable
+      env: 
+        My_VAR: ${{ job.job1.outputs.MY_VAR }}
       run: echo "The value of MY_VAR is:${{ env.MY_VAR }}"
