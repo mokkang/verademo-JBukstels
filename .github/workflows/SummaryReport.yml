@@ -41,10 +41,10 @@ jobs:
      steps:
      - name: Get ID file
        run: |
-         source app_id.txt
+         APP_ID=$(cat app_id.txt)
      - name: set ID env
        run: |
-         echo: "APP_ID=$(cat app_id.txt)" >> $GITHUB_ENV
+         echo: "APP_ID=$APP_ID" >> $GITHUB_ENV
      - name: verify ID
        run: echo "APP_ID=$APP_ID"
      - name: Summary
