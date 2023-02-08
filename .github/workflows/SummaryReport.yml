@@ -32,7 +32,7 @@ jobs:
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
           | jq -r '._embedded.applications[0].guid')
         echo "APP_ID=$GUID" >> $GITHUB_ENV
-        echo "APP_ID=$APP_ID
+        echo "APP_ID=$APP_ID"
         
     
       
