@@ -34,15 +34,15 @@ jobs:
         echo "APP_ID=$GUID"
     
       
-    - name: wait for GUID
-      run: |
-        while [[ -z "$GUID" ]]; do 
-          sleep 5
-          GUID=$(cat $GITHUB_ENV | grep "APP_ID=" | cut -d = -f 2)
-        done
-      
     - name: Summary 
       run: |
+         # Check if first API call is complete 
+         if [[ -z "${{steps.get_guid.outputs.GUID }}" ]]; then
+           echo "Waiting for first API call to complete" 
+           exit 1
+         fi
+         
+         GUID="${{ steps.get_guid.outputs.GUID }}" 
          docker run --rm \
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
