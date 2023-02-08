@@ -28,15 +28,20 @@ jobs:
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
-          http --wait --auth-type veracode_hmac GET \
+          curl --silent --fail 
+          http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
           | jq -r '._embedded.applications[0].guid')
         echo "APP_ID=$GUID"
     
       
-
+    - name: wait for GUID
+      run: |
+        while [[ -z "$GUID" ]]; do 
+          sleep 5
+          GUID=$(cat $GITHUB_ENV | grep "APP_ID=" | cut -d = -f 2)
       
-    - name: Summary
+    - name: Summary 
       run: |
          docker run --rm \
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
@@ -44,6 +49,7 @@ jobs:
           veracode/api-signing \
           http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v2/applications/$GUID/summary_report \
+
 
 
   
