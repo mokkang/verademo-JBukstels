@@ -24,7 +24,6 @@ jobs:
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
       run: |
-       while [[ -z "$GUID" ]]; do
        GUID=$(docker run --rm \
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
@@ -32,18 +31,13 @@ jobs:
           http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
           | jq -r '._embedded.applications[0].guid')
-        if [[ -n "$GUID" ]]; then
-          break
-        fi
-        echo "Waiting for first API call "
-        sleep 15
-       done
 
         
     - name: Summary 
       env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }}
+      if: steps.get_guid.outputs.GUID != ''
       run: |
          docker run --rm \
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
