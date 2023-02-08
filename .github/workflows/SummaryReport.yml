@@ -48,7 +48,7 @@ jobs:
        id: get_output
        run: echo "GUID=${GUID}"
        env:
-         GUID: ${{ steps.set_output.outputs.guid }}
+         GUID: ${{ steps.veracode-api-call.outputs.guid }}
      - name: Verify ID
        run: echo "APP_ID=${{ steps.get_guid.outputs.guid }}"
      - name: Summary
