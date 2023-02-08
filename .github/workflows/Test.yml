@@ -1,0 +1,17 @@
+name: Example Workflow
+on: workflow_dispatch
+env:
+  MY_VAR: ''
+jobs:
+  job1:
+    name: Job 1
+    runs-on: ubuntu-latest
+    steps:
+name: Set the environment variable
+      run: echo "MY_VAR=value" >> $GITHUB_ENV
+  job2:
+    name: Job 2
+    runs-on: ubuntu-latest
+    steps:
+name: Use the environment variable
+      run: echo "The value of MY_VAR is: ${{ env.MY_VAR }}"
