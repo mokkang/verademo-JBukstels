@@ -42,7 +42,7 @@ jobs:
      env: 
        API_ID: ${{ secrets.VERACODE_API_ID }}
        API_KEY: ${{ secrets.VERACODE_API_KEY }} 
-       APP_ID: ${{ env.get_guid.outputs.GUID }}
+       APP_ID: ${{ steps.get_guid.outputs.GUID }}
      steps:
      - name: verify ID
        run: echo "APP_ID=${{ env.APP_ID }}"
