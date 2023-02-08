@@ -41,7 +41,7 @@ jobs:
      steps:
      - name: Get ID file
        run: |
-         APP_ID=$(cat app_id.txt)
+         echo "$(cat app_id.txt)" >> APP_ID
      - name: set ID env
        run: |
          echo: "APP_ID=$APP_ID" >> $GITHUB_ENV
