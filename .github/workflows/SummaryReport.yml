@@ -46,7 +46,7 @@ jobs:
        env: 
         API_ID: ${{ secrets.VERACODE_API_ID }}
         API_KEY: ${{ secrets.VERACODE_API_KEY }} 
-        APP_ID: ${{ env.APP_ID }}
+        APP_ID: ${{ env.GUID }}
        run: |
          docker run --rm \
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
