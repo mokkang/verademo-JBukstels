@@ -43,7 +43,7 @@ jobs:
      needs: veracode-api-call
      steps:
      - name: Verify ID
-       run: echo "APP_ID=${{ env.APP_ID }}"
+       run: echo "APP_ID=${{ env.GUID }}"
      - name: Summary
        env: 
          API_ID: ${{ secrets.VERACODE_API_ID }}
