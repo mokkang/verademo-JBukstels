@@ -50,12 +50,12 @@ jobs:
        env:
          GUID: ${{ steps.set_output.outputs.guid }}
      - name: Verify ID
-       run: echo "APP_ID=${{ steps.get_guid.outputs.GUID }}"
+       run: echo "APP_ID=${{ steps.get_guid.outputs.guid }}"
      - name: Summary
        env: 
          API_ID: ${{ secrets.VERACODE_API_ID }}
          API_KEY: ${{ secrets.VERACODE_API_KEY }} 
-         APP_ID: ${{ steps.get_guid.outputs.GUID }}
+         APP_ID: ${{ steps.get_guid.outputs.guid }}
        run: |
          docker run --rm \
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
