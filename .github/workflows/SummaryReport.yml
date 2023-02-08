@@ -28,7 +28,7 @@ jobs:
           -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
           -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
-          http --auth-type veracode_hmac GET \
+          http --wait --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
           | jq -r '._embedded.applications[0].guid')
         echo "APP_ID=$GUID"
@@ -42,7 +42,7 @@ jobs:
          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
           veracode/api-signing \
-          http --wait --auth-type veracode_hmac GET \
+          http --auth-type veracode_hmac GET \
           https://api.veracode.com/appsec/v2/applications/$GUID/summary_report \
 
 
