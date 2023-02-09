@@ -19,5 +19,12 @@ jobs:
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
           GUID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].guid')
           echo GUID: ${GUID}
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/$GUID/summary_report" > summary.json
+      
+      - name: save summary file
+        uses: actions/upload-artifacts@2
+        with: 
+          name: summary-report
+          path: /summary.json 
 
   
