@@ -26,6 +26,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with: 
           name: summary-report
-          path: /summary.json 
+          path: /tmp/summary.json 
 
   
