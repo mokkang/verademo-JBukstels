@@ -22,7 +22,7 @@ jobs:
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/$GUID/summary_report" > summary.json
       
       - name: save summary file
-        uses: actions/upload-artifacts@2
+        uses: actions/upload-artifacts@v2
         with: 
           name: summary-report
           path: /summary.json 
