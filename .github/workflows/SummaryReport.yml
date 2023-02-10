@@ -1,57 +1,24 @@
-name: Summary Report
+name: Summary Report GHA
 
-on:
-#  push:
-#    branches: [ main ]
-#  pull_request:
-#    branches: [ main ]
-    workflow_dispatch: 
-
+on: workflow_dispatch
 env:
   API_ID: ${{ secrets.VERACODE_API_ID }}
   API_KEY: ${{ secrets.VERACODE_API_KEY }}
   APP_NAME: VeraGHA
 
+jobs:
 
-jobs: 
-  veracode-api-call:
+  get_summary_report:
     runs-on: ubuntu-latest
-  
-    steps:
-    - name: Get Application GUID for Verademo One
-      id: get_guid
-      env: 
-        API_ID: ${{ secrets.VERACODE_API_ID }}
-        API_KEY: ${{ secrets.VERACODE_API_KEY }}
-      run: |
-       GUID=$(docker run --rm \
-          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
-          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
-          veracode/api-signing \
-          http --auth-type veracode_hmac GET \
-          https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }} \
-          | jq -r '._embedded.applications[0].guid')
-          echo "APP_ID=$GUID"
-          docker run --rm \
-          -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
-          -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
-           veracode/api-signing \
-           http --auth-type veracode_hmac GET \
-           https://api.veracode.com/appsec/v2/applications/$GUID/summary_report \
-
-        
-    - name: Summary 
-      env: 
-        API_ID: ${{ secrets.VERACODE_API_ID }}
-        API_KEY: ${{ secrets.VERACODE_API_KEY }}
-      if: steps.get_guid.outputs.GUID != ''
-      run: |
-         docker run --rm \
-         -e VERACODE_API_KEY_ID=${{ env.API_ID }} \
-         -e VERACODE_API_KEY_SECRET=${{ env.API_KEY }} \
-          veracode/api-signing \
-          http --auth-type veracode_hmac GET \
-          https://api.veracode.com/appsec/v2/applications/$GUID/summary_report \
+    container:
+      image: veracode/api-signing:latest
+    steps: 
+      - name: get summary report
+        run: |
+          cd /tmp
+          export VERACODE_API_KEY_ID=${{ env.API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
+          http --auth-type=veracode_hmac "https://analysiscenter.veracode.com/api/5.0/getappinfo.do"
 
 
 
