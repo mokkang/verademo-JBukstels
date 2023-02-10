@@ -24,7 +24,12 @@ jobs:
           echo Build ID: $BUILD_ID
           http --auth-type veracode_hmac -o summaryreport.pdf GET "https://analysiscenter.veracode.com/api/4.0/summaryreportpdf.do?build_id=$BUILD_ID"
         
-
+      - name: upload PDF report
+        uses: actions/upload-artifact@v2
+        with:
+          name: summary-report
+          path: /tmp/summaryreport.pdf
+        
 
   
       
