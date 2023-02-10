@@ -21,7 +21,7 @@ jobs:
           ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
           echo GUID: ${ID}
           XML_OUTPUT=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID")
-          BUILD_ID=$(echo "$XML_OUTPUT" | jq -r 'select(.buildinfo.build@build_id)')
+          BUILD_ID=$(echo "$XML_OUTPUT" | jq -r 'select(.buildinfo.build\@build_id)')
           echo Build ID: ${BUILD_ID}
 
 
