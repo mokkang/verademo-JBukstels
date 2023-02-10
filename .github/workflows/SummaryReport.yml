@@ -1,4 +1,4 @@
-name: Summary Report GHA
+name: Summary Report PDF
 
 on: workflow_dispatch
 env:
@@ -18,7 +18,8 @@ jobs:
           cd /tmp
           export VERACODE_API_KEY_ID=${{ env.API_ID }}
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
-          http --auth-type=veracode_hmac "https://analysiscenter.veracode.com/api/5.0/getappinfo.do"
+          ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
+          echo GUID: ${ID}
 
 
 
