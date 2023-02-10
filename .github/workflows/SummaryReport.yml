@@ -20,8 +20,9 @@ jobs:
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
           ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
           echo GUID: ${ID}
-          Build_ID=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID" | jq -r 'select(.buildinfo.build.@build_id)')
-          echo Build ID: ${Build_ID}
+          XML_OUTPUT=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID")
+          BUILD_ID=$(echo "$XML_OUTPUT" | jq -r 'select(.buildinfor.build@build_id)')
+          echo Build ID: ${BUILD_ID}
 
 
 
