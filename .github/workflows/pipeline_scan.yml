@@ -45,34 +45,9 @@ jobs:
       run: |
         cd /github/home/app/target
         java -jar /opt/veracode/pipeline-scan.jar --veracode_api_id="${{secrets.VERACODE_API_ID}}" --veracode_api_key="${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file="verademo.war" --json_output_file="results.json"
-      continue-on-error: true
+      continue-on-error: false
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ScanResults
-        path: /github/home/app/target/results.json
 
-  # Convert pipeline scan output to SARIF format  
-  process-results:
-    needs: pipeline-scan
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Retrieve results
-      uses: actions/download-artifact@v2
-      with:
-        name: ScanResults
-
-    - name: convert
-      uses: veracode/veracode-pipeline-scan-results-to-sarif@master
-      with:
-        pipeline-results-json: results.json
-        output-results-sarif: veracode-results.sarif
-        finding-rule-level: "4:3:0"
-    - uses: github/codeql-action/upload-sarif@v2
-      with:
-    # Path to SARIF file relative to the root of the repository
-        sarif_file: veracode-results.sarif
 
 
 
