@@ -64,7 +64,7 @@ jobs:
           # Filename of the packaged application to upload and scan.
           file: analysis/verademo.war
           # Fail the pipeline job if the scan finds flaws of the specified severities. Enter a comma-separated list of severities in quotation marks.
-          fail_on_severity: "Very High"
+          fail_on_severity: "High"
           # Filter the flaws that exist in the specified baseline file and show only the additional flaws in the current scan.
           baseline_file: true
           # Enter true to save the scan results in JSON format. Default is true.
