@@ -60,7 +60,7 @@ jobs:
           # vid
           vid: ${{secrets.VERACODE_API_ID}}
           # vkey
-          vkey: ${{secrets.VERACODE_API_KEY}
+          vkey: ${{secrets.VERACODE_API_KEY}}
           # Filename of the packaged application to upload and scan.
           file: analysis/verademo.war
           # Fail the pipeline job if the scan finds flaws of the specified severities. Enter a comma-separated list of severities in quotation marks.
