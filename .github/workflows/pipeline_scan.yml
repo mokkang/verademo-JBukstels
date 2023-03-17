@@ -2,10 +2,7 @@ name: Pipelinescanner Verademo Maven Build
 
 on:
   pull_request:
-    branches:
-      - main 
-    types: 
-      - opened 
+    branches: [ main, feature ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
