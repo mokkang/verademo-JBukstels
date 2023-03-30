@@ -51,7 +51,6 @@ jobs:
     #  Submit  project to pipeline scan
     - name: Pipeline Scan
       run: |
-        git clone https://github.com/tjarrettveracode/veracode-pipeline-mitigation.git
         ls
         java -jar /opt/veracode/pipeline-scan.jar --veracode_api_id="${{secrets.VERACODE_API_ID}}" --veracode_api_key="${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file="/github/home/app/targetverademo.war" --json_output_file="results.json"
       continue-on-error: false
