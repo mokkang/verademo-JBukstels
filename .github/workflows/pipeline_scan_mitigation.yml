@@ -43,14 +43,10 @@ jobs:
         name: CodePackage
         path: /github/home
         
-    - name: Checkout Mitigation Script
-      uses: actions/checkout@v2.7.0
-      with:
-        name: tjarrettveracode/veracode-pipeline-mitigation
     
     #  Submit  project to pipeline scan
     - name: Pipeline Scan
       run: |
-        ls
+        pwd
         java -jar /opt/veracode/pipeline-scan.jar --veracode_api_id="${{secrets.VERACODE_API_ID}}" --veracode_api_key="${{secrets.VERACODE_API_KEY}}" --fail_on_severity="Very High, High" --file="/github/home/app/targetverademo.war" --json_output_file="results.json"
       continue-on-error: false
