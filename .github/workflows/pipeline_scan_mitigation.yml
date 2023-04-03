@@ -48,5 +48,6 @@ jobs:
     #  Submit  project to pipeline scan
     - name: Pipeline Scan
       run: |
+        apt-get update
         apt-get install git-all
         git --version
