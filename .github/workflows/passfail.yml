@@ -16,7 +16,7 @@ jobs:
       - name: get pass/fail info
         run: |
           cd /tmp
-          java -jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
+          java -jar /opt/veracode/api-wrapper.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
           cat passfail.tct
       
       - name: save summary file
