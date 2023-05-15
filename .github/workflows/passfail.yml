@@ -1,0 +1,26 @@
+name: Pass/Fail GHA
+
+on: workflow_dispatch
+env:
+  API_ID: ${{ secrets.VERACODE_API_ID }}
+  API_KEY: ${{ secrets.VERACODE_API_KEY }}
+  APP_NAME: VeraGHA
+
+jobs:
+
+  get_summary_report:
+    runs-on: ubuntu-latest
+    container:
+      image: veracode/api-wrapper-java:latest
+    steps: 
+      - name: get pass/fail info
+        run: |
+          cd /tmp
+          java -jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
+          cat passfail.tct
+      
+      - name: save summary file
+        uses: actions/upload-artifact@v2
+        with: 
+          name: summary-report
+          path: /tmp/summary.json 
