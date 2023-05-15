@@ -8,7 +8,7 @@ env:
 
 jobs:
 
-  get_summary_report:
+  get_pass_fail_info:
     runs-on: ubuntu-latest
     container:
       image: veracode/api-wrapper-java:latest
@@ -19,8 +19,4 @@ jobs:
           java -jar /opt/veracode/api-wrapper.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
           cat passfail.txt
       
-      - name: save summary file
-        uses: actions/upload-artifact@v2
-        with: 
-          name: summary-report
-          path: /tmp/summary.json 
+
