@@ -17,7 +17,7 @@ jobs:
         run: |
           cd /tmp
           java -jar /opt/veracode/api-wrapper.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
-          cat passfail.tct
+          cat passfail.txt
       
       - name: save summary file
         uses: actions/upload-artifact@v2
