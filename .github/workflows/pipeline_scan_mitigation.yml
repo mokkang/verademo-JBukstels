@@ -33,15 +33,11 @@ jobs:
 
     
     steps:
-    - name: Modify Permissions
-      run: sudo chmod -R 777 /github
-      
     - name: Retrieve artifact
       uses: actions/download-artifact@v2
       with:
         name: CodePackage
-        path: /github/home
-        options: --user root 
+        path: .
         
     - name: Pipeline Scan
       continue-on-error: true
