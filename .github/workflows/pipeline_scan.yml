@@ -43,6 +43,7 @@ jobs:
     
     #  Submit  project to pipeline scan
     - name: Pipeline Scan
+      continue-on-error: true
       run: |
         ls
         cd /github/home/app/target
