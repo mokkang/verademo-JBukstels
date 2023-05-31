@@ -40,7 +40,6 @@ jobs:
         path: .
         
     - name: Pipeline Scan
-      continue-on-error: true
       run: |
         wget https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
         unzip -o -d /tmp pipeline-scan-LATEST.zip
@@ -54,3 +53,4 @@ jobs:
       with:
         name: veracode-results
         path: ./results.json
+        if: always()
