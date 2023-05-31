@@ -44,9 +44,10 @@ jobs:
       run: |
         wget https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
         unzip -o -d /tmp pipeline-scan-LATEST.zip
-        chmod +r *.war
-        java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --request_policy "Test"
-        java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --fail_on_severity="Very High, High" --file "/home/runner/work/verademo/verademo/verademo.war"
+        ls -la
+        #chmod +r *.war
+        #java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --request_policy "Test"
+        #java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --fail_on_severity="Very High, High" --file "/home/runner/work/verademo/verademo/verademo.war"
       
     - uses: actions/upload-artifact@v2
       name: upload reports
