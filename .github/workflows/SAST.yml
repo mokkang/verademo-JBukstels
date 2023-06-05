@@ -125,7 +125,7 @@ jobs:
           echo GUID: ${guid}
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&size=${total_flaws}" > policy_flaws.json
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&size=500" > policy_flaws.json
           total_sca=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA" | jq -r '.page.total_elements')
           echo TOTAL_SCA: ${total_sca}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA&size=${total_sca}" > sca_flaws.json
