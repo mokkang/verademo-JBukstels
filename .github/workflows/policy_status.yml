@@ -1,4 +1,4 @@
-name: Summary Report GHA
+name: Policy Status Script
 
 on: workflow_dispatch
 env:
