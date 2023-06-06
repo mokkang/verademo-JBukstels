@@ -21,6 +21,7 @@ jobs:
           GUID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].guid')
           echo GUID: ${GUID}
           response=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/$GUID")
+          echo $response
           policy_status=$(echo "$response" | jq -r '._embedded.applications[0].profile.policies[0].policy_compliance_status')
           echo Policy_Status: ${policy_status}
       
