@@ -8,7 +8,7 @@ env:
 
 jobs:
 
-  get_summary_report:
+  get_ploicy_status:
     runs-on: ubuntu-latest
     container:
       image: veracode/api-signing:latest
@@ -21,15 +21,11 @@ jobs:
           GUID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].guid')
           echo GUID: ${GUID}
           response=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/$GUID")
-          echo $response
           policy_status=$(echo "$response" | jq -r '.profile.policies[0].policy_compliance_status')
           echo Policy_Status: ${policy_status}
-      
-      
-      - name: save summary file
-        uses: actions/upload-artifact@v2
-        with: 
-          name: summary-report
-          path: /tmp/summary.json 
+          if [ "$policy_status" == "DID_NOT_PASS" ]; then
+            exit 1
+          fi
+    
 
   
