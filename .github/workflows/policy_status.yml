@@ -13,7 +13,7 @@ jobs:
     container:
       image: veracode/api-signing:latest
     steps: 
-      - name: get summary report
+      - name: get policy status
         run: |
           cd /tmp
           export VERACODE_API_KEY_ID=${{ env.API_ID }}
