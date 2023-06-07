@@ -20,6 +20,7 @@ jobs:
           passfail=$(cat passfail.txt)
           if echo "$passfail" | grep -q "Did Not Pass"; then
             echo "The scan did not pass policy"
+            exit 1
           else 
             echo "The scan did pass policy"
           fi
