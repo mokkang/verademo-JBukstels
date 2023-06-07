@@ -17,7 +17,8 @@ jobs:
         run: |
           cd /tmp
           java -jar /opt/veracode/api-wrapper.jar -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} -action passfail -appname ${{ env.APP_NAME }} > passfail.txt
-          if echo "cat passfail.txt" | grep -q "Did Not Pass"; then
+          passfail=$(cat passfail.txt)
+          if echo "$passfail" | grep -q "Did Not Pass"; then
             echo "The scan did not pass policy"
             exit 1
           else 
