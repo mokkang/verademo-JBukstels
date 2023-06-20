@@ -1,70 +1,168 @@
+/*
+ * Normal Jenkinsfile that will do policy and SCA
+ */
+
 pipeline{
     agent any
-    
+
     environment {
-        VERACODE_APP_NAME = "Verademo Jenkins" // define app name 
+        VERACODE_APP_NAME = 'Verademo Jenkins' // Application name in Veracode Platform
     }
-    
+
     tools {
-        //install Maven
+        // install Maven
         maven "maven-3"
     }
+
+
+options {
+        // only keep the last x build logs and artifacts (for space saving)
+        buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
+    }
+
     stages{
-        stage("Build"){
+        stage ('environment verify') {
             steps {
-                //Get code from Github
-                git branch:'main', url:'https://github.com/justinbukstel/verademo'
-                
-                //run Maven build
-                dir ("app"){
-                    sh "pwd"
-                    sh "ls"
-                    sh "mvn clean package"
+                script {
+                    if (isUnix() == true) {
+                        sh 'pwd'
+                        sh 'ls -la'
+                        sh 'echo $PATH'
+                    }
+                    else {
+                        bat 'dir'
+                        bat 'echo %PATH%'
+                    }
+                }
+                git branch: 'main', url: 'https://github.com/justinbukstel/verademo'
+            }
+        }
+
+        stage ('build') {
+            steps {
+                withMaven(maven:'maven-3') {
+                    script {
+                        if(isUnix() == true) {
+                            sh 'mvn clean package -f app/pom.xml'
+                        }
+                        else {
+                            bat 'mvn clean package -f app/pom.xml'
+                        }
+                    }
                 }
             }
         }
-        stage ("Veracode SCA") {
+    
+        stage ('Veracode Pipeline Scan') {
+            steps {
+                withCredentials([ usernamePassword ( 
+                    credentialsId: 'Veracode_Credentials', usernameVariable: 'VERACODE_API_ID', passwordVariable: 'VERACODE_API_KEY') ]) {
+                        // Copy baseline from previous job
+                        copyArtifacts(projectName: "$JOB_NAME", selector: lastSuccessful(stable: true), filter: 'baseline.json', target: '.', optional: true)
+                        script {
+                            ref = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                            baseline = ''
+                            if (fileExists('baseline.json')) {
+                                baseline = '--baseline_file baseline.json'
+                            }
+                        }
+
+                        // Download and Submit Pipeline Scan
+                        sh 'curl -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
+                        sh 'ls -la'
+                        unzip zipFile: 'pipeline-scan-LATEST.zip'
+                        sh """
+                            java -jar pipeline-scan.jar \
+                                --veracode_api_id '${VERACODE_API_ID}' \
+                                --veracode_api_key '${VERACODE_API_KEY}' \
+                                -jf results.json \
+                                --file app/target/verademo.war \
+                                --project_name "$JOB_NAME" \
+                                --project_ref "$ref" \
+                                $baseline
+                           """
+                        
+
+                    }
+            }
+        }
+
+        stage ('Store Baseline') {
+            steps {
+                script {
+                    try {
+                        input(message: 'Store results as baseline for future scans?', ok: 'Yes')
+                        sh 'cp baseline.json build-baseline.json'
+                        sh 'cp results.json baseline.json'
+                    } catch (err) {
+
+                    }
+                }
+            }
+        }
+
+        stage ('Veracode SCA') {
             steps {
                 echo 'Veracode SCA'
-                withCredentials([string(credentialsId: 'SCA_TOKEN', variable: 'SRCCLR_API_TOKEN')]) {
+                withCredentials([ string(credentialsId: 'SCA', variable: 'SRCCLR_API_TOKEN')]) {
                     withMaven(maven:'maven-3') {
-                    script {
-                        sh "curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan ./app"
+                        script {
+                            if(isUnix() == true) {
+                                sh "curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan ./app --allow-dirty --update-advisor"
+
+                                // debug, no upload
+                                //sh "curl -sSL https://download.sourceclear.com/ci.sh | DEBUG=1 sh -s -- scan --no-upload"
+                            }
+                            else {
+                                powershell '''
+                                            Set-ExecutionPolicy AllSigned -Scope Process -Force
+                                            $ProgressPreference = "silentlyContinue"
+                                            iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
+                                            srcclr scan ./app
+                                            '''
+                            }
+                        }
                     }
-       }
-       }
-        }
-        }
-        stage ('Pipeline Scan') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'Veracode_Credentials', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]){
-                    withMaven(maven:'maven-3') {
-                    sh 'curl -sO https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip'
-                    sh 'unzip pipeline-scan-LATEST.zip pipeline-scan.jar'
-                    sh 'java -jar pipeline-scan.jar \
-                    --veracode_api_id "${API_ID}" \
-                    --veracode_api_key "${API_KEY}" \
-                    --file "app/target/verademo.war" \
-                    --fail_on_severity="Very High, High" \
-                    --fail_on_cwe="80"'
-                } 
                 }
             }
-            
         }
-            
 
-        stage ("Veracode scan") {
+        stage ('Veracode Upload and Scan') {
             steps {
-                echo 'Veracode scanning'
-                withCredentials([usernamePassword(credentialsId: 'Veracode_Credentials', passwordVariable: 'API_KEY', usernameVariable: 'API_ID')]) {
-                    // fire-and-forget
-                        veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: '${BUILD_TAG}', uploadExcludesPattern: '', uploadIncludesPattern: 'app/target/verademo.war', vid: "${API_ID}", vkey: "${API_KEY}"
-                    
-                        // wait for scan to complete (includes timeout parameter)
-                        // veracode applicationName: "${VERACODE_APP_NAME}", criticality: 'VeryHigh', debug: true, timeout: 20, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: "${BUILD_TAG}", uploadExcludesPattern: '', uploadIncludesPattern: 'target/verademo.war', vid: "${VERACODE_API_ID}", vkey: "${VERACODE_API_KEY}"
+                script {
+                    if(isUnix() == true) {
+                        env.HOST_OS = 'Unix'
+                    }
+                    else {
+                        env.HOST_OS = 'Windows'
+                    }
                 }
+
+                echo 'Veracode Scanning'
+                withCredentials([usernamePassword (
+                    credentialsId: 'Veracode_Credentials', usernameVariable: 'VERACODE_API_ID', passwordVariable: 'VERACODE_API_KEY') ]) {
+                        veracode applicationName: 'Verademo Jenkins', criticality: 'VeryHigh', debug: true, fileNamePattern: '', pHost: '', pPassword: '', pUser: '', replacementPattern: '', sandboxName: '', scanExcludesPattern: '', scanIncludesPattern: '', scanName: "${BUILD_TAG}-${env.HOST_OS}", uploadExcludesPattern: '', uploadIncludesPattern: 'target/verademo.war', vid: "${VERACODE_API_ID}", vkey: "${VERACODE_API_KEY}"
+                    }
+            }
         }
-    }
-    }
-    }
+
+        stage ('Veracode Dynamic Scan Resubmit') {
+            steps {
+                script {
+                    if(isUnix() == true) {
+                        env.HOST_OS = 'Unix'
+                    }
+                    else {
+                        env.HOST_OS = 'Windows'
+                    }
+                }
+
+                echo 'Dynamic Resubmit'
+                withCredentials([usernamePassword (
+                    credentialsId: 'Veracode_Credentials', usernameVariable: 'VERACODE_API_ID', passwordVariable: 'VERACODE_API_KEY')]) {
+                        veracodeDynamicAnalysisResubmit analysisName: 'Verademo_ISM', debug: true, maximumDuration: 72, vid: "${VERACODE_API_ID}", vkey: "${VERACODE_API_KEY}"
+                    }
+            }
+        }
+    }    
+}
