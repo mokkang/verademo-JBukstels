@@ -1,0 +1,39 @@
+# More examples of Codefresh YAML can be found at
+# https://codefresh.io/docs/docs/yaml-examples/examples/
+
+version: "1.0"
+# Stages can help you organize your steps in stages
+stages:
+  - "clone"
+  - "build"
+  - "test"
+
+steps:
+  clone:
+    title: "Cloning repository"
+    type: "git-clone"
+    repo: "justinbukstel/verademo"
+    # CF_BRANCH value is auto set when pipeline is triggered
+    # Learn more at codefresh.io/docs/docs/codefresh-yaml/variables/
+    revision: "${{CF_BRANCH}}"
+    git: "github"
+    stage: "clone"
+
+  build:
+    title: "Building Java Maven Application"
+    type: "freestyle"
+    working_directory: "${{clone}}"
+    image: "maven:latest"
+    commands:
+      - "cd app"
+      - "mvn clean package"
+    stage: "build"
+
+  veracode:
+    title: "Veracode Upload and Scan"
+    tpye: "freestyle"
+    working_directory: "${{clone}}"
+    image: "veracode/api-wrapper-java:latest"
+    commands:
+        - "java -jar /opt/veracode/api-wrapper.jar -vid ${VERACODE_API_KEY_ID} -vkey ${VERACODE_API_KEY_SECRET} -action UploadAndScan -createprofile true -appname VeraGHA -version ${CF_BUILD_ID} -filepath /codefresh/volume/verademo/app/target/verademo.war"
+    stage: "test"
