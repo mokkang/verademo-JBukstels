@@ -16,7 +16,8 @@ jobs:
           
         - name: Veracode Dependency Scanning
           run: |
-              curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --update-advisor
-              echo $?
+              curl -sSL https://download.sourceclear.com/ci.sh | bash -s scan --update-advisor > results.txt
+              cat results.txt
+              
           
           
