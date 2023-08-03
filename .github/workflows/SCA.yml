@@ -1,6 +1,6 @@
 name: Veracode SCA Agent Demo
 on:
-  workflow_dispatch
+  workflow_dispatch:
   #pull_request:
    # branches: [ feature, main ]
 
