@@ -70,7 +70,7 @@ jobs:
           # filepath
           filepath: analysis/verademo.war
           # version
-          version:  ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }} # default is Scan from Github job: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+          version:  ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}-${{ github.ref_name }} # default is Scan from Github job: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
           # vid
           vid: ${{secrets.VERACODE_API_ID}}
           # vkey
