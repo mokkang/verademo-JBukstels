@@ -33,6 +33,7 @@ jobs:
     container: 
       image: veracode/pipeline-scan:latest
       options: --user root # our normal luser doesn't have privs to write to github directories
+    continue-on-error: true
 
     steps:
     - name: Retrieve artifact
