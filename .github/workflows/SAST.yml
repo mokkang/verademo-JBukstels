@@ -1,4 +1,4 @@
-name: Verademo Maven Build
+name: Verademo Upload and Scan
 
 on:
 #  push:
