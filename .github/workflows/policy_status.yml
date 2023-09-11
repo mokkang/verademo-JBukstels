@@ -22,6 +22,7 @@ jobs:
           cat input.json
           ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/was/configservice/v1/analyses?name=${{ env.Analyses_Name }}" | jq -r '._embedded.analyses[0].analysis_id')
           echo ID:${ID}
+          http --auth-type veracode_hmac PUT "https://api.veracode.com/was/configservice/v1/analyses/$ID?method=PATCH" < input.json
     
 
   
