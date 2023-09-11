@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Generate JSON and Resubmit JSON
         run: 
-          sudo chmod 777 /tmp 
+          cd $GITHUB_WORKSPACE
           echo "{\"name\":\"Pre Scan Test\",\"schedule\":{\"duration\":{\"length\":1,\"unit\":\"DAY\"},\"scheduled\":true,\"now\":true}}" > input.json
           export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
           export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
