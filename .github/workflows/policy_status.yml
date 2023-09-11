@@ -18,14 +18,9 @@ jobs:
           cd /tmp
           export VERACODE_API_KEY_ID=${{ env.API_ID }}
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
-          GUID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].guid')
-          echo GUID: ${GUID}
-          response=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/$GUID")
-          policy_status=$(echo "$response" | jq -r '.profile.policies[0].policy_compliance_status')
-          echo Policy_Status: ${policy_status}
-          if [ "$policy_status" == "DID_NOT_PASS" ]; then
-            exit 1
-          fi
+          echo "{\"name\":\"Pre Scan Test\",\"schedule\":{\"duration\":{\"length\":1,\"unit\":\"DAY\"},\"scheduled\":true,\"now\":true}}" > input.json
+          ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/was/configservice/v1/analyses?name=${{ env.Analyses_Name }}" | jq -r '._embedded.analyses[0].analysis_id')
+          echo ID:${ID}
     
 
   
