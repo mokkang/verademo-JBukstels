@@ -1,4 +1,4 @@
-name: Policy Status Script
+name: DAST Submit
 
 on: workflow_dispatch
 env:
