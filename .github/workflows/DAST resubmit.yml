@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: Generate JSON and Resubmit JSON
         run: 
+          sudo chmod 777 /tmp 
           echo "{\"name\":\"Pre Scan Test\",\"schedule\":{\"duration\":{\"length\":1,\"unit\":\"DAY\"},\"scheduled\":true,\"now\":true}}" > input.json
           export VERACODE_API_KEY_ID=${{ env.API_ID }}
           export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
