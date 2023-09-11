@@ -2,8 +2,6 @@ name: DAST Resubmit
 
 on: workflow_dispatch
 env: 
-  API_ID: $ {{ secrets.VERACODE_API_ID }}
-  API_KEY: ${{ secrets.VERACODE_API_KEY }}
   Analyses_Name: Pre Scan Test
 
 jobs:
@@ -17,8 +15,8 @@ jobs:
         run: 
           sudo chmod 777 /tmp 
           echo "{\"name\":\"Pre Scan Test\",\"schedule\":{\"duration\":{\"length\":1,\"unit\":\"DAY\"},\"scheduled\":true,\"now\":true}}" > input.json
-          export VERACODE_API_KEY_ID=${{ env.API_ID }}
-          export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
+          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
           ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/was/configservice/v1/analyses?name=${{ env.Analyses_Name }}" | jq -r '._embedded.analyses[0].analysis_id')
           echo ID:${ID}
           
