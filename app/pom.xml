@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.5</version>
+			<version>${fileupload.version}</version>
 		</dependency>
 
 		<!-- Apache Commons IO -->
@@ -133,10 +133,6 @@
 			<version>4.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.inlong</groupId>
-			<artifactId>manager-service</artifactId>
-			<version>1.4.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
