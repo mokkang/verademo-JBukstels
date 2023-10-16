@@ -11,6 +11,10 @@ jobs:
   get_summary_report:
     runs-on: ubuntu-latest
     steps: 
+      - name: Install xmlstarlet
+        run: |
+          apt-get update
+          apt-get install -y xmlstarlet
       - name: Checkout repository
         uses: actions/checkout@v2
         with: 
@@ -18,6 +22,19 @@ jobs:
       - name: Display repo content
         run: |
           ls -la
+          apt 
+          python3 -m pip install --upgrade pip wheel
+          python3 -m pip install httpie
+          pip install -r requirements.txt
+          export VERACODE_API_KEY_ID=${{ env.API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
+          ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
+          echo GUID: ${ID}
+          BUILD_ID=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID" | sed -n 's/.*build_id="\([0-9]*\)".*/\1/p')
+          echo Build ID: $BUILD_ID
+          XML_RESPONSE=$(http --auth-type veracode_hmac -o summaryreport.pdf GET "https://analysiscenter.veracode.com/api/4.0/detailedreport.do?build_id=$BUILD_ID")
+          app_id=$(echo "$XML_RESPONSE" | xmlstarlet sel -N "ns=https://www.veracode.com/schema/reports/export/1.0" -t -m "//ns:detailedreport" -v "@app_id")
+          echo "app_id: $app_id"
 
       
         
