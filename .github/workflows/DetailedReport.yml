@@ -33,9 +33,8 @@ jobs:
           echo Build ID: $BUILD_ID
           XML_RESPONSE=$(http --auth-type veracode_hmac -b GET "https://analysiscenter.veracode.com/api/4.0/detailedreport.do?build_id=$BUILD_ID")
           echo "$XML_RESPONSE" > detailed_report.xml  # Save the XML to a file for debugging
-          app_id=$(echo "$XML_RESPONSE" | xmlstarlet sel -N "https://www.veracode.com/schema/reports/export/1.0" -t -m "/detailedreport" -v "@app_id")
+          app_id=$(echo "$XML_RESPONSE" | xmlstarlet sel -N "d=https://www.veracode.com/schema/reports/export/1.0" -t -m "/d:detailedreport" -v "@app_id")
           echo "app_id: $app_id"
-
       
         
 
