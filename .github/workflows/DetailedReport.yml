@@ -15,8 +15,8 @@ jobs:
     steps: 
       - name: install xmlstarlet
         run: |
-          sudo apt-get update
-          sudo ap-get install -y xmlstarlet
+          apt-get update
+          apt-get install -y xmlstarlet
       - name: get detailed report
         run: |
           cd /tmp
