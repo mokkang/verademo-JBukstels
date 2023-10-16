@@ -41,6 +41,8 @@ jobs:
           echo "analysis_id: $analysis_id"
           static_analysis_unit_id=$(echo "$XML_RESPONSE" | xmlstarlet sel -N "ns=https://www.veracode.com/schema/reports/export/1.0" -t -m "//ns:detailedreport" -v "@static_analysis_unit_id")
           echo "static_analysis_unit_id: $static_analysis_unit_id"
+          docker pull antfie/scan_health:latest
+          
       
         
 
