@@ -1,8 +1,8 @@
 name: Veracode Container Scanning
 
 on:
-  workflow_dispatch:
-
+#  workflow_dispatch:
+  push:
 jobs:
   container: 
     name: Container Security
@@ -13,9 +13,15 @@ jobs:
   
       - name: Container Security 
         run: |
+            ls -lhart
+            mkdir /home/luser/.veracode
+            touch /home/luser/.veracode/credentials
+            echo "[default]" > /home/luser/.veracode/credentials
+            echo "veracode_api_key_id=${{ secrets.VERACODE_API_ID }}" >> /home/luser/.veracode/credentials
+            echo "veracode_api_key_secret=${{ secrets.VERACODE_API_KEY }}" >> /home/luser/.veracode/credentials
             pwd
-            export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
-            export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+            # export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+            # export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
             curl -fsS https://tools.veracode.com/veracode-cli/install | sh
             ./veracode configure
             ./veracode scan --source /home/runner/work/verademo/verademo --type directory --format json --output ./veracode_container_scan.json
