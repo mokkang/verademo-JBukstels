@@ -1,14 +1,12 @@
 
 
-name: Mitigation Pipeline Scanner 
+name: AC
 
 on:
   workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  
 jobs:
-  # This workflow contains a job to build and submit pipeline scan, you will need to customize the build process accordingly and make sure the artifact you build is used as the file input to the pipeline scan file parameter
-  build:
+  Maven_Build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
@@ -28,26 +26,31 @@ jobs:
       with:
         name: CodePackage
         path: '**/*.war'
-      
   
-  pipeline-scan:
-    needs: build
+  Pipeline_Scan: 
+    needs: Maven_Build
     runs-on: ubuntu-latest
-    container: 
-      image: veracode/pipeline-scan:latest
-      options: --user root # our normal luser doesn't have privs to write to github directories
 
+    
     steps:
     - name: Retrieve artifact
       uses: actions/download-artifact@v2
       with:
         name: CodePackage
-        path: /github/home
-
-    
-    #  Submit  project to pipeline scan
+        path: .
+        
     - name: Pipeline Scan
       run: |
-        apt-get update
-        apt-get install git-all
-        git --version
+        wget https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+        unzip -o -d /tmp pipeline-scan-LATEST.zip
+        cd app/target
+        ls -la
+        java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --request_policy "Test"
+        java -jar /tmp/pipeline-scan.jar --veracode_api_id "${{ secrets.VERACODE_API_ID }}" --veracode_api_key "${{ secrets.VERACODE_API_KEY }}" --fail_on_severity="Very High, High" --file verademo.war
+      
+    - uses: actions/upload-artifact@v2
+      name: upload reports
+      with:
+        name: veracode-results
+        path: ./results.json
+        if: always()

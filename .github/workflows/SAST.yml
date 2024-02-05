@@ -1,4 +1,4 @@
-name: Verademo Maven Build
+name: Verademo Upload and Scan
 
 on:
 #  push:
@@ -6,6 +6,10 @@ on:
 #  pull_request:
 #    branches: [ main ]
     workflow_dispatch: 
+env:
+  API_ID: ${{ secrets.VERACODE_API_ID }}
+  API_KEY: ${{ secrets.VERACODE_API_KEY }}
+  APP_NAME: VeraGHA
 
 
 jobs:
@@ -70,42 +74,34 @@ jobs:
           # filepath
           filepath: analysis/verademo.war
           # version
-          version:  ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }} # default is Scan from Github job: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+          version:  ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}-${{ github.ref_name }} # default is Scan from Github job: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
           # vid
           vid: ${{secrets.VERACODE_API_ID}}
           # vkey
           vkey: ${{secrets.VERACODE_API_KEY}}
-          # true or false
-          #createsandbox: false # optional
-          # name of the sandbox
-          #sandboxname: # optional
-          # wait X minutes for the scan to complete
-          #scantimeout: # optional
-          # modules to exclude from module selection
-          #exclude: # optional
-          # modules to include in module selection
-          #include: # optional
-          # business criticality - policy selection
-          #criticality: # optional
-          # filename pattern
-          #pattern: # optional
-          # replacement
-          #replacement: # optional
-          # specify to scan in a sandbox
-          #sandboxid: # optional
-          # All top level modules
-          #scanallnonfataltoplevelmodules: # optional
-          # platform selected modules
-          #selected: # optional
-          # selected modules like from previous scan
-          #selectedpreviously: # optional
-          # teams
-          #teams: # optional
-          # teams
-          #toplevel: # optional
-          # automatically delete the current scan if there are any errors when uploading files or starting the scan
+
           deleteincompletescan: true # optional
           # specify version of the Java API Wrapper; default is latest
           #javawrapperversion: # optional
           # show detailed diagnostic information, which you can use for debugging, in the output.
           debug: 1 # optional
+          
+      - name: Get Detailed Report
+        uses: actions/setup-python@v2
+        with: 
+          python-version: 3.8
+      - name: Clone HMAC and run script
+        run: |
+          pip install httpie
+          git clone https://github.com/veracode/veracode-python-hmac-example.git
+          pip install -r veracode-python-hmac-example/requirements.txt
+          export VERACODE_API_KEY_ID=${{ env.API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ env.API_KEY }}
+          ID=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications/?name=${{ env.APP_NAME }}" | jq -r '._embedded.applications[0].id')
+          echo GUID: ${ID}
+          BUILD_ID=$(http --auth-type veracode_hmac GET "https://analysiscenter.veracode.com/api/5.0/getbuildinfo.do?app_id=$ID" | sed -n 's/.*build_id="\([0-9]*\)".*/\1/p')
+          echo Build ID: $BUILD_ID
+          http --auth-type veracode_hmac -o summaryreport.pdf GET "https://analysiscenter.veracode.com/api/4.0/detailedrep 
+    
+        
+
